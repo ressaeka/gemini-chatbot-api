@@ -1,4 +1,4 @@
-// Import library 
+// Import library yang dibutuhkan
 const express = require('express');
 const dotenv = require('dotenv');
 const multer = require('multer');
@@ -7,43 +7,43 @@ const path = require('path');
 const cors = require('cors');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
-// Load environment 
+// Load variabel dari file .env
 dotenv.config();
 
-// Inisialisasi Express
+// Inisialisasi aplikasi Express
 const app = express();
 const PORT = 3000;
 
-// Middleware
+// Middleware untuk parsing request dan menghindari CORS error
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
+app.use(express.static('public')); // Menyediakan folder public untuk static file
 
-// Setup Multer untuk file upload
+// Setup penyimpanan sementara file upload
 const upload = multer({ dest: 'uploads/' });
 
-// Inisialisasi Gemini API
+// Inisialisasi Gemini API dengan API Key dari .env
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: 'models/gemini-1.5-flash' });
 
-// Start server
+// Jalankan server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
 
-// Route POST untuk generate text
+
+// -------------------- ROUTES -------------------- //
+
+// Handle request POST untuk generate teks biasa
 app.post('/generate-text', async (req, res) => {
   const { prompt } = req.body;
-
-  if (!prompt) {
-    return res.status(400).json({ error: 'Prompt is required' });
-  }
+  if (!prompt) return res.status(400).json({ error: 'Prompt is required' });
 
   try {
-    const result = await model.generateContent(prompt);
+    const result = await model.generateContent(prompt);  // Kirim prompt ke Gemini
     const response = await result.response;
-    const text = await response.text();
+    const text = await response.text(); // Ambil jawaban teks
     res.json({ text });
   } catch (error) {
     console.error('Error generating text:', error);
@@ -51,11 +51,11 @@ app.post('/generate-text', async (req, res) => {
   }
 });
 
-// Route POST untuk generate dari image        
+
+// Handle upload dan analisis gambar
 app.post('/generate-from-image', upload.single('image'), async (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ error: 'No image file uploaded' });
-  }
+  if (!req.file) return res.status(400).json({ error: 'No image file uploaded' });
+
   const filePath = req.file.path;
   const buffer = fs.readFileSync(filePath);
   const base64Data = buffer.toString('base64');
@@ -68,8 +68,7 @@ app.post('/generate-from-image', upload.single('image'), async (req, res) => {
     };
 
     const result = await model.generateContent([
-      { text: prompt },
-      imagePart
+      { text: prompt }, imagePart
     ]);
 
     const response = await result.response;
@@ -83,11 +82,11 @@ app.post('/generate-from-image', upload.single('image'), async (req, res) => {
   }
 });
 
-// route untuk mengupload dokumen file (pdf, txt, doc, docx)
+
+// Handle upload dan analisis dokumen (PDF, DOC, TXT)
 app.post('/generate-from-document', upload.single('document'), async (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ error: 'No document file uploaded' });
-  }
+  if (!req.file) return res.status(400).json({ error: 'No document file uploaded' });
+
   const filePath = req.file.path;
   const buffer = fs.readFileSync(filePath);
   const base64Data = buffer.toString('base64');
@@ -97,9 +96,10 @@ app.post('/generate-from-document', upload.single('document'), async (req, res) 
     'application/pdf',
     'text/plain',
     'application/msword',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document' 
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
   ];
 
+  // Cek apakah file bertipe dokumen yang diizinkan
   if (!allowedMimeTypes.includes(mimeType)) {
     try { fs.unlinkSync(filePath); } catch (e) {}
     return res.status(400).json({
@@ -113,8 +113,7 @@ app.post('/generate-from-document', upload.single('document'), async (req, res) 
     };
 
     const result = await model.generateContent([
-      { text: 'Analisis dokumen ini:' },
-      documentPart
+      { text: 'Analisis dokumen ini:' }, documentPart
     ]);
 
     const response = await result.response;
@@ -126,11 +125,11 @@ app.post('/generate-from-document', upload.single('document'), async (req, res) 
   }
 });
 
-//route untuk mengupload file audio
+
+// Handle upload dan analisis audio (belum didukung Gemini secara resmi, ini eksperimen)
 app.post('/generate-from-audio', upload.single('audio'), async (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ error: 'No audio file uploaded' });
-  }
+  if (!req.file) return res.status(400).json({ error: 'No audio file uploaded' });
+
   const filePath = req.file.path;
   const audioBuffer = fs.readFileSync(filePath);
   const base64Audio = audioBuffer.toString('base64');
@@ -145,8 +144,7 @@ app.post('/generate-from-audio', upload.single('audio'), async (req, res) => {
 
   try {
     const result = await model.generateContent([
-      { text: 'Transkripsikan atau analisis audio berikut:' },
-      audioPart
+      { text: 'Transkripsikan atau analisis audio berikut:' }, audioPart
     ]);
 
     const response = await result.response;
