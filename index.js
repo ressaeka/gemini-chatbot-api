@@ -25,7 +25,14 @@ const upload = multer({ dest: 'uploads/' });
 
 // Inisialisasi Gemini API dengan API Key dari .env
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: 'models/gemini-2.5-flash' });
+const model = genAI.getGenerativeModel({
+    model: 'gemini-2.0-flash-exp',
+    generationConfig: {
+        maxOutputTokens: 50,
+        temperature: 0.7,
+        topP: 0.8,
+    }
+});
 
 // Jalankan server
 app.listen(PORT, () => {
@@ -52,107 +59,107 @@ app.post('/generate-text', async (req, res) => {
 });
 
 
-// Handle upload dan analisis gambar
-app.post('/generate-from-image', upload.single('image'), async (req, res) => {
-  if (!req.file) return res.status(400).json({ error: 'No image file uploaded' });
+// // Handle upload dan analisis gambar
+// app.post('/generate-from-image', upload.single('image'), async (req, res) => {
+//   if (!req.file) return res.status(400).json({ error: 'No image file uploaded' });
 
-  const filePath = req.file.path;
-  const buffer = fs.readFileSync(filePath);
-  const base64Data = buffer.toString('base64');
-  const mimeType = req.file.mimetype;
-  const prompt = req.body.prompt || 'Describe the image';
+//   const filePath = req.file.path;
+//   const buffer = fs.readFileSync(filePath);
+//   const base64Data = buffer.toString('base64');
+//   const mimeType = req.file.mimetype;
+//   const prompt = req.body.prompt || 'Describe the image';
 
-  try {
-    const imagePart = {
-      inlineData: { data: base64Data, mimeType }
-    };
+//   try {
+//     const imagePart = {
+//       inlineData: { data: base64Data, mimeType }
+//     };
 
-    const result = await model.generateContent([
-      { text: prompt }, imagePart
-    ]);
+//     const result = await model.generateContent([
+//       { text: prompt }, imagePart
+//     ]);
 
-    const response = await result.response;
-    const text = await response.text();
-    res.json({ output: text });
-  } catch (error) {
-    console.error('Error generating image content:', error);
-    res.status(500).json({ error: error.message });
-  } finally {
-    try { fs.unlinkSync(filePath); } catch (e) {}
-  }
-});
-
-
-// Handle upload dan analisis dokumen (PDF, DOC, TXT)
-app.post('/generate-from-document', upload.single('document'), async (req, res) => {
-  if (!req.file) return res.status(400).json({ error: 'No document file uploaded' });
-
-  const filePath = req.file.path;
-  const buffer = fs.readFileSync(filePath);
-  const base64Data = buffer.toString('base64');
-  const mimeType = req.file.mimetype;
-
-  const allowedMimeTypes = [
-    'application/pdf',
-    'text/plain',
-    'application/msword',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-  ];
-
-  // Cek apakah file bertipe dokumen yang diizinkan
-  if (!allowedMimeTypes.includes(mimeType)) {
-    try { fs.unlinkSync(filePath); } catch (e) {}
-    return res.status(400).json({
-      error: `MIME type '${mimeType}' tidak didukung. Hanya PDF, TXT, DOC, dan DOCX yang diterima.`,
-    });
-  }
-
-  try {
-    const documentPart = {
-      inlineData: { data: base64Data, mimeType }
-    };
-
-    const result = await model.generateContent([
-      { text: 'Analisis dokumen ini:' }, documentPart
-    ]);
-
-    const response = await result.response;
-    res.json({ output: await response.text() });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  } finally {
-    try { fs.unlinkSync(filePath); } catch (e) {}
-  }
-});
+//     const response = await result.response;
+//     const text = await response.text();
+//     res.json({ output: text });
+//   } catch (error) {
+//     console.error('Error generating image content:', error);
+//     res.status(500).json({ error: error.message });
+//   } finally {
+//     try { fs.unlinkSync(filePath); } catch (e) {}
+//   }
+// });
 
 
-// Handle upload dan analisis audio (belum didukung Gemini secara resmi, ini eksperimen)
-app.post('/generate-from-audio', upload.single('audio'), async (req, res) => {
-  if (!req.file) return res.status(400).json({ error: 'No audio file uploaded' });
+// // Handle upload dan analisis dokumen (PDF, DOC, TXT)
+// app.post('/generate-from-document', upload.single('document'), async (req, res) => {
+//   if (!req.file) return res.status(400).json({ error: 'No document file uploaded' });
 
-  const filePath = req.file.path;
-  const audioBuffer = fs.readFileSync(filePath);
-  const base64Audio = audioBuffer.toString('base64');
-  const mimeType = req.file.mimetype;
+//   const filePath = req.file.path;
+//   const buffer = fs.readFileSync(filePath);
+//   const base64Data = buffer.toString('base64');
+//   const mimeType = req.file.mimetype;
 
-  const audioPart = {
-    inlineData: {
-      data: base64Audio,
-      mimeType
-    }
-  };
+//   const allowedMimeTypes = [
+//     'application/pdf',
+//     'text/plain',
+//     'application/msword',
+//     'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+//   ];
 
-  try {
-    const result = await model.generateContent([
-      { text: 'Transkripsikan atau analisis audio berikut:' }, audioPart
-    ]);
+//   // Cek apakah file bertipe dokumen yang diizinkan
+//   if (!allowedMimeTypes.includes(mimeType)) {
+//     try { fs.unlinkSync(filePath); } catch (e) {}
+//     return res.status(400).json({
+//       error: `MIME type '${mimeType}' tidak didukung. Hanya PDF, TXT, DOC, dan DOCX yang diterima.`,
+//     });
+//   }
 
-    const response = await result.response;
-    const text = await response.text();
-    res.json({ output: text });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  } finally {
-    try { fs.unlinkSync(filePath); } catch (e) {}
-  }
-});
+//   try {
+//     const documentPart = {
+//       inlineData: { data: base64Data, mimeType }
+//     };
+
+//     const result = await model.generateContent([
+//       { text: 'Analisis dokumen ini:' }, documentPart
+//     ]);
+
+//     const response = await result.response;
+//     res.json({ output: await response.text() });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   } finally {
+//     try { fs.unlinkSync(filePath); } catch (e) {}
+//   }
+// });
+
+
+// // Handle upload dan analisis audio (belum didukung Gemini secara resmi, ini eksperimen)
+// app.post('/generate-from-audio', upload.single('audio'), async (req, res) => {
+//   if (!req.file) return res.status(400).json({ error: 'No audio file uploaded' });
+
+//   const filePath = req.file.path;
+//   const audioBuffer = fs.readFileSync(filePath);
+//   const base64Audio = audioBuffer.toString('base64');
+//   const mimeType = req.file.mimetype;
+
+//   const audioPart = {
+//     inlineData: {
+//       data: base64Audio,
+//       mimeType
+//     }
+//   };
+
+//   try {
+//     const result = await model.generateContent([
+//       { text: 'Transkripsikan atau analisis audio berikut:' }, audioPart
+//     ]);
+
+//     const response = await result.response;
+//     const text = await response.text();
+//     res.json({ output: text });
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   } finally {
+//     try { fs.unlinkSync(filePath); } catch (e) {}
+//   }
+// });
