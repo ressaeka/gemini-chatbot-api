@@ -31,14 +31,14 @@
 ## 📁 Project Structure
 
 | File/Folder         | Description                                                              |
-|---------------------|---------------------------------------------------------------------------|
+|---------------------|---------------------------------------------------------------------------
 | `index.js`          | Main server file (Express backend + Gemini routes)                       |
-| `.env`              | Stores Google API Key securely                                            |
+| `.env`              | Stores Google API Key securely                                           |
 | `public/`           | Contains static frontend files: HTML, CSS, JS                            |
 | `uploads/`          | Temporary storage for uploaded files (auto-deleted after processed)      |
 | `package.json`      | Project config and dependency list                                       |
 | `public/script.js`  | Client-side script for handling input and UI interactions                |
-| `public/style.css`  | Styling for the chatbot interface                                         |
+| `public/style.css`  | Styling for the chatbot interface                                        |
 
 
 
