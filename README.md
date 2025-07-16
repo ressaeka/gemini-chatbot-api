@@ -1,38 +1,55 @@
 # 🤖 Gemini Chatbot (Node.js + Express)
 
-**Gemini Chatbot** adalah aplikasi web sederhana berbasis Node.js + Express yang terintegrasi dengan API Gemini (Generative AI) dari Google. Aplikasi ini menerima input dari pengguna, mengirimkannya ke model AI, lalu menampilkan respons dalam bentuk web sederhana.
-
+**Gemini Chatbot** is a simple web application built with **Node.js + Express**, integrated with **Google Generative AI (Gemini API)**. This app allows users to send prompts **with files** such as **text, images, audio, video, or documents**, and get intelligent responses directly on a clean, interactive web interface.
 
 ![Preview](Assets/Implementasi.png)
 
-## 🚀 Teknologi yang Digunakan
 
-- Node.js + Express
-- Google Generative AI API (Gemini)
-- Multer (untuk upload file)
-- Dotenv (untuk mengelola API Key)
-- HTML, CSS, JavaScript (client side)
-- Middleware: CORS, JSON parser, URL-encoded parser
 
----
+## 🚀 Technologies Used
 
-## 📁 Struktur Folder
+- **Node.js + Express** (backend)
+- **Google Generative AI API (Gemini)**
+- **Multer** – for uploading various file types
+- **Dotenv** – for managing environment variables (API key)
+- **HTML, CSS, JavaScript** – frontend structure
+- **CORS, JSON Parser, URL Encoded Parser** – middleware
 
-| File/Folder        | Fungsi                                                                 |
-|--------------------|------------------------------------------------------------------------|
-| `index.js`         | Titik masuk utama aplikasi (Express server)                            |
-| `.env`             | Menyimpan variabel lingkungan, seperti API Key                         |
-| `public/`          | Folder berisi file statis (HTML, CSS, JS)                              |
-| `uploads/`         | Folder penyimpanan sementara untuk file upload                         |
-| `package.json`     | Konfigurasi npm dan daftar dependensi                                  |
-| `script.js`        | Script client-side (berada di dalam folder `public`)                   |
-| `style.css`        | Style halaman HTML                                                     |
 
----
+## ⚙️ Key Features
 
-## ⚙️ Persiapan Awal
+- ✅ Send text and receive AI response  
+- ✅ Upload and analyze images (JPG, PNG)  
+- ✅ Upload and transcribe/analyze audio (MP3, WAV, OGG)  
+- ✅ Upload documents (PDF, DOCX, TXT)  
+- ✅ Upload videos (MP4, WebM, OGG)  
+- ✅ Real-time chatbot response bubbles  
+- ✅ File name preview before sending  
 
-1. **Clone repo** ini ke lokal:
+
+
+## 📁 Project Structure
+
+| File/Folder         | Description                                                              |
+|---------------------|---------------------------------------------------------------------------|
+| `index.js`          | Main server file (Express backend + Gemini routes)                       |
+| `.env`              | Stores Google API Key securely                                            |
+| `public/`           | Contains static frontend files: HTML, CSS, JS                            |
+| `uploads/`          | Temporary storage for uploaded files (auto-deleted after processed)      |
+| `package.json`      | Project config and dependency list                                       |
+| `public/script.js`  | Client-side script for handling input and UI interactions                |
+| `public/style.css`  | Styling for the chatbot interface                                         |
+
+
+
+## 🛠️ Getting Started
+
+1. **Clone the repository:**
    ```bash
-   git clone https://github.com/namamu/gemini-chatbot.git
+   git clone https://github.com/yourname/gemini-chatbot.git
    cd gemini-chatbot
+
+
+
+
+
