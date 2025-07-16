@@ -5,13 +5,12 @@ const chatBox = document.getElementById('chat-box');
 
 // Event listener saat form dikirim
 form.addEventListener('submit', async (e) => {
-  e.preventDefault(); // Mencegah reload halaman
-
-  const prompt = input.value.trim(); // Ambil dan bersihkan input user
+  e.preventDefault(); 
+  const prompt = input.value.trim(); 
   if (!prompt) return; 
 
-  appendMessage('user', prompt); // Tampilkan pesan dari user ke chat
-  input.value = '';
+  appendMessage('user', prompt); 
+  input.value = ''; 
 
   // Tampilkan loading sementara saat menunggu jawaban dari AI
   const loadingMsg = appendMessage('bot', 'Gemini is thinking...');
