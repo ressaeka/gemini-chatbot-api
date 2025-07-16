@@ -8,10 +8,10 @@ form.addEventListener('submit', async (e) => {
   e.preventDefault(); // Mencegah reload halaman
 
   const prompt = input.value.trim(); // Ambil dan bersihkan input user
-  if (!prompt) return; // Jangan lanjut kalau kosong
+  if (!prompt) return; 
 
   appendMessage('user', prompt); // Tampilkan pesan dari user ke chat
-  input.value = ''; // Kosongkan input setelah dikirim
+  input.value = '';
 
   // Tampilkan loading sementara saat menunggu jawaban dari AI
   const loadingMsg = appendMessage('bot', 'Gemini is thinking...');
