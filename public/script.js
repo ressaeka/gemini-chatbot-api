@@ -1,5 +1,5 @@
-// GANTI DENGAN URL RAILWAY PUNYA LO
-const API_URL = 'https://your-project.up.railway.app'; 
+// URL Railway Backend 
+const API_URL = 'gemini-chatbot-api-production.up.railway.app'; 
 
 // Ambil elemen-elemen DOM yang diperlukan
 const form = document.getElementById('chat-form');
@@ -13,13 +13,13 @@ uploadBtn.addEventListener('click', () => fileInput.click());
 
 // Event saat form dikirim (user submit chat)
 form.addEventListener('submit', async (e) => {
-  e.preventDefault(); // Mencegah reload halaman
+  e.preventDefault();
 
-  const prompt = input.value.trim(); // Ambil input user
-  const file = fileInput.files[0];   // Ambil file jika ada
-  if (!prompt && !file) return;      // Jika kosong, tidak lanjut
+  const prompt = input.value.trim();
+  const file = fileInput.files[0];
+  if (!prompt && !file) return;
 
-  // Tampilkan pesan user di chat
+  // Tampilkan pesan user
   let userMessage = prompt;
   if (file) userMessage += `\n📎 ${file.name}`;
   appendMessage('user', userMessage);
@@ -27,44 +27,52 @@ form.addEventListener('submit', async (e) => {
   input.value = '';
   fileInput.value = '';
 
-  // Tampilkan pesan loading dari bot
-  const loadingMsg = appendMessage('bot', 'Gemini is thinking...');
+  // Tampilkan pesan loading
+  const loadingMsg = appendMessage('bot', '🤖 Gemini is thinking...');
 
   try {
-    let res;
+    let response;
+
     if (file) {
-      // Jika ada file, kirim sebagai FormData (multipart)
       const formData = new FormData();
       formData.append('file', file);
       if (prompt) formData.append('prompt', prompt);
 
-      res = await fetch(`${API_URL}/generate`, {
+      response = await fetch(`${API_URL}/generate`, {
         method: 'POST',
         body: formData
       });
+
     } else {
-      // Jika hanya teks, kirim sebagai JSON
-      res = await fetch(`${API_URL}/generate`, {
+      response = await fetch(`${API_URL}/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({ prompt })
       });
     }
 
-    // Ambil respon dari server dan tampilkan ke chat
-    const data = await res.json();
+    const data = await response.json();
+
+    if (!response.ok) {
+      loadingMsg.textContent = `❌ Server error: ${data.error || response.statusText}`;
+      return;
+    }
+
+    // Tampilkan hasil Gemini
     loadingMsg.textContent = (data.output || data.text || 'Saya Tidak Mengerti.')
-      .replace(/#+\s?/g, '')   // Hapus heading markdown: ###, ##, #
-      .replace(/\*\*/g, '')    // Hapus bold markdown: **bold**
-      .replace(/\*/g, '');     // Hapus italic: *italic*
+      .replace(/#+\s?/g, '')   // Hapus heading markdown
+      .replace(/\*\*/g, '')    // Hapus bold markdown
+      .replace(/\*/g, '');     // Hapus italic
 
   } catch (err) {
-    // Jika gagal, tampilkan pesan error
-    loadingMsg.textContent = '❌ Gagal menghubungi server.';
+    loadingMsg.textContent = 'Gagal menghubungi server.';
+    console.error(err);
   }
 });
 
-// Fungsi untuk menambah pesan ke chat box
+// Fungsi untuk menambahkan pesan ke chat box
 function appendMessage(sender, text) {
   const msg = document.createElement('div');
   msg.className = `message ${sender}`;
