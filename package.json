@@ -1,14 +1,14 @@
 {
   "name": "gemini-chatbot",
   "version": "1.0.0",
+  "description": "Chatbot Gemini AI by Reysa",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "author": "Reysa Eka Saputra",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "cors": "^2.8.5",
