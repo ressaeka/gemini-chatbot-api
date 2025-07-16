@@ -4,21 +4,30 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Gemini AI Chatbot by Reysa</title>
+  <!-- Menghubungkan file CSS untuk styling -->
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
   <div class="container">
+    <!-- Judul aplikasi -->
     <h1>Gemini AI Chatbot</h1>
+    <!-- Area chat, tempat pesan tampil -->
     <div id="chat-box" class="chat-box"></div>
 
+    <!-- Form input chat dan upload file -->
     <form id="chat-form">
+      <!-- Tombol untuk upload file -->
       <button type="button" id="upload-btn" title="Upload File">+</button>
+      <!-- Input file, disembunyikan (muncul saat tombol upload diklik) -->
       <input type="file" id="file-input" style="display: none;" />
+      <!-- Input teks untuk pesan user -->
       <input type="text" id="user-input" placeholder="Type your message..." autocomplete="off" />
+      <!-- Tombol submit pesan -->
       <button type="submit">Send</button>
     </form>
   </div>
 
+  <!-- Menghubungkan file JavaScript untuk interaksi -->
   <script src="script.js"></script>
 </body>
 </html>
