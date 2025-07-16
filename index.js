@@ -3,40 +3,27 @@ const dotenv = require('dotenv');
 const multer = require('multer');
 const fs = require('fs');
 const cors = require('cors');
-const path = require('path');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
-// Load environment variables
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
 
-// Serve static frontend files from public/
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Upload handler
 const upload = multer({ dest: 'uploads/' });
 
-// Gemini API setup
-if (!process.env.GEMINI_API_KEY) {
-  console.error('❌ GEMINI_API_KEY belum diset di environment variable!');
-  process.exit(1);
-}
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: 'models/gemini-2.5-flash' });
 
-// Optional: Handle root route /
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });
 
-// Endpoint untuk generate chat
 app.post('/generate', upload.single('file'), async (req, res) => {
   const { prompt } = req.body;
   const file = req.file;
@@ -45,7 +32,6 @@ app.post('/generate', upload.single('file'), async (req, res) => {
     return res.status(400).json({ error: 'No input provided' });
   }
 
-  // Jika hanya prompt (tanpa file)
   if (!file) {
     try {
       const result = await model.generateContent(prompt);
@@ -56,7 +42,6 @@ app.post('/generate', upload.single('file'), async (req, res) => {
     }
   }
 
-  // Jika ada file, proses file
   const filePath = file.path;
   const buffer = fs.readFileSync(filePath);
   const base64Data = buffer.toString('base64');
@@ -69,7 +54,7 @@ app.post('/generate', upload.single('file'), async (req, res) => {
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     'audio/mpeg', 'audio/mp3', 'audio/wav',
     'audio/webm', 'audio/ogg',
-    'video/mp4', 'video/webm', 'video/ogg'
+    'video/mp4', 'video/webm', 'video/ogg' // ✅ TAMBAHAN VIDEO
   ];
 
   if (!allowedMimeTypes.includes(mimeType)) {
@@ -89,9 +74,4 @@ app.post('/generate', upload.single('file'), async (req, res) => {
   } finally {
     try { fs.unlinkSync(filePath); } catch {}
   }
-});
-
-// Start server
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
 });

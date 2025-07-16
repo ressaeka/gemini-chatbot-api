@@ -1,9 +1,7 @@
-/* Mengatur box-sizing agar padding dan border masuk ke ukuran elemen */
 * {
   box-sizing: border-box;
 }
 
-/* Styling dasar untuk body */
 body {
   font-family: Arial, sans-serif;
   background-color: #f0f2f5;
@@ -11,7 +9,6 @@ body {
   padding: 0;
 }
 
-/* Container utama chat, mengatur ukuran, posisi, dan tampilan */
 .container {
   max-width: 600px;
   width: 90%;
@@ -25,13 +22,11 @@ body {
   height: 90vh;
 }
 
-/* Judul aplikasi di tengah */
 h1 {
   text-align: center;
   margin-bottom: 10px;
 }
 
-/* Area chat, tempat pesan ditampilkan */
 .chat-box {
   display: flex;
   flex-direction: column;
@@ -44,7 +39,6 @@ h1 {
   margin-bottom: 10px;
 }
 
-/* Styling pesan chat */
 .message {
   margin: 8px 0;
   padding: 10px 15px;
@@ -53,19 +47,16 @@ h1 {
   word-wrap: break-word;
 }
 
-/* Pesan dari user, warna biru dan rata kanan */
 .message.user {
   background-color: #d1e7ff;
   align-self: flex-end;
 }
 
-/* Pesan dari bot, warna hijau muda dan rata kiri */
 .message.bot {
   background-color: #dff6dd;
   align-self: flex-start;
 }
 
-/* Styling form input chat dan tombol */
 form {
   display: flex;
   gap: 10px;
@@ -73,7 +64,6 @@ form {
   flex-wrap: wrap;
 }
 
-/* Input teks untuk chat */
 input[type="text"] {
   flex: 2 1 60%;
   padding: 12px;
@@ -82,7 +72,6 @@ input[type="text"] {
   font-size: 16px;
 }
 
-/* Tombol upload file (ikon) */
 #upload-btn {
   width: 45px;
   height: 45px;
@@ -97,7 +86,6 @@ input[type="text"] {
   justify-content: center;
 }
 
-/* Tombol submit chat */
 button[type="submit"] {
   padding: 12px 20px;
   border: none;
