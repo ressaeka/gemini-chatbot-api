@@ -10,21 +10,31 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-
+// Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
-
 const upload = multer({ dest: 'uploads/' });
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: 'models/gemini-2.5-flash' });
+// Debug log environment key
+if (!process.env.GEMINI_API_KEY) {
+  console.error('❌ Environment variable GEMINI_API_KEY tidak ditemukan!');
+  process.exit(1); // Stop proses jika API key kosong
+}
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// Inisialisasi Gemini
+let model;
+try {
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+  model = genAI.getGenerativeModel({ model: 'models/gemini-2.5-flash' });
+  console.log('✅ Gemini API terhubung');
+} catch (err) {
+  console.error('❌ Gagal inisialisasi GoogleGenerativeAI:', err.message);
+  process.exit(1);
+}
 
+// Endpoint utama
 app.post('/generate', upload.single('file'), async (req, res) => {
   const { prompt } = req.body;
   const file = req.file;
@@ -39,6 +49,7 @@ app.post('/generate', upload.single('file'), async (req, res) => {
       const response = await result.response;
       return res.json({ output: await response.text() });
     } catch (err) {
+      console.error('❌ Error dari Gemini (text only):', err.message);
       return res.status(500).json({ error: err.message });
     }
   }
@@ -71,8 +82,14 @@ app.post('/generate', upload.single('file'), async (req, res) => {
     const response = await result.response;
     res.json({ output: await response.text() });
   } catch (err) {
+    console.error('❌ Error dari Gemini (dengan file):', err.message);
     res.status(500).json({ error: err.message });
   } finally {
     try { fs.unlinkSync(filePath); } catch {}
   }
+});
+
+// Jalankan server
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });
