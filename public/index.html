@@ -10,11 +10,15 @@
   <div class="container">
     <h1>Gemini AI Chatbot</h1>
     <div id="chat-box" class="chat-box"></div>
+
     <form id="chat-form">
-      <input type="text" id="user-input" placeholder="Type your message..." autocomplete="off" required />
+      <button type="button" id="upload-btn" title="Upload File">+</button>
+      <input type="file" id="file-input" style="display: none;" />
+      <input type="text" id="user-input" placeholder="Type your message..." autocomplete="off" />
       <button type="submit">Send</button>
     </form>
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>

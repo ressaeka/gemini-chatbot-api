@@ -44,38 +44,49 @@ h1 {
   padding: 10px 15px;
   border-radius: 20px;
   max-width: 75%;
-  clear: both;
   word-wrap: break-word;
 }
 
 .message.user {
   background-color: #d1e7ff;
-  text-align: right;
   align-self: flex-end;
-  margin-left: auto;
 }
 
 .message.bot {
   background-color: #dff6dd;
-  text-align: left;
   align-self: flex-start;
-  margin-right: auto;
 }
 
 form {
   display: flex;
   gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 input[type="text"] {
-  flex: 1;
+  flex: 2 1 60%;
   padding: 12px;
   border-radius: 20px;
   border: 1px solid #ccc;
   font-size: 16px;
 }
 
-button {
+#upload-btn {
+  width: 45px;
+  height: 45px;
+  border: none;
+  background-color: #198754;
+  color: white;
+  border-radius: 50%;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button[type="submit"] {
   padding: 12px 20px;
   border: none;
   background-color: #0d6efd;
@@ -83,21 +94,4 @@ button {
   border-radius: 20px;
   font-size: 16px;
   cursor: pointer;
-}
-
-button:hover {
-  background-color: #0b5ed7;
-}
-
-/* Responsif di layar kecil */
-@media (max-width: 500px) {
-  .message {
-    max-width: 90%;
-  }
-
-  .container {
-    height: auto;
-    margin: 20px auto;
-    padding: 15px;
-  }
 }

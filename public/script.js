@@ -1,45 +1,59 @@
-// Ambil elemen-elemen penting dari HTML
 const form = document.getElementById('chat-form');
 const input = document.getElementById('user-input');
+const fileInput = document.getElementById('file-input');
+const uploadBtn = document.getElementById('upload-btn');
 const chatBox = document.getElementById('chat-box');
 
-// Event listener saat form dikirim
+uploadBtn.addEventListener('click', () => fileInput.click());
+
 form.addEventListener('submit', async (e) => {
-  e.preventDefault(); 
-  const prompt = input.value.trim(); 
-  if (!prompt) return; 
+  e.preventDefault();
 
-  appendMessage('user', prompt); 
-  input.value = ''; 
+  const prompt = input.value.trim();
+  const file = fileInput.files[0];
+  if (!prompt && !file) return;
 
-  // Tampilkan loading sementara saat menunggu jawaban dari AI
+  let userMessage = prompt;
+  if (file) userMessage += `\n📎 ${file.name}`;
+  appendMessage('user', userMessage);
+
+  input.value = '';
+  fileInput.value = '';
+
   const loadingMsg = appendMessage('bot', 'Gemini is thinking...');
 
   try {
-    // Kirim permintaan ke backend untuk proses AI
-    const res = await fetch('http://localhost:3000/generate-text', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt }) // Kirim input user ke backend
-    });
+    let res;
+    if (file) {
+      const formData = new FormData();
+      formData.append('file', file);
+      if (prompt) formData.append('prompt', prompt);
 
-    const data = await res.json(); // Ambil respons dari server
+      res = await fetch('http://localhost:3000/generate', {
+        method: 'POST',
+        body: formData
+      });
+    } else {
+      res = await fetch('http://localhost:3000/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt })
+      });
+    }
 
-    // Tampilkan hasil jawaban AI dan bersihkan karakter bintang (*)
+    const data = await res.json();
     loadingMsg.textContent = (data.output || data.text || 'Saya Tidak Mengerti.').replace(/\*/g, '');
+
   } catch (err) {
-    // Tampilkan pesan error jika fetch gagal
     loadingMsg.textContent = 'Gagal menghubungi server.';
-    console.error(err);
   }
 });
 
-// Fungsi bantu untuk menambahkan pesan ke chat box
 function appendMessage(sender, text) {
   const msg = document.createElement('div');
-  msg.className = `message ${sender}`; // Tambah class message dan sender (user/bot)
-  msg.textContent = text; // Isi teks
-  chatBox.appendChild(msg); // Tambahkan ke chat box
-  chatBox.scrollTop = chatBox.scrollHeight; // Scroll otomatis ke bawah
+  msg.className = `message ${sender}`;
+  msg.textContent = text;
+  chatBox.appendChild(msg);
+  chatBox.scrollTop = chatBox.scrollHeight;
   return msg;
 }
