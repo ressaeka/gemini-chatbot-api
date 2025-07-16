@@ -25,7 +25,7 @@ const upload = multer({ dest: 'uploads/' });
 
 // Inisialisasi Gemini API dengan API Key dari .env
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: 'models/gemini-1.5-flash' });
+const model = genAI.getGenerativeModel({ model: 'models/gemini-2.5-flash' });
 
 // Jalankan server
 app.listen(PORT, () => {
