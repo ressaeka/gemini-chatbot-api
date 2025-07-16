@@ -3,7 +3,7 @@
 **Gemini Chatbot** adalah aplikasi web sederhana berbasis Node.js + Express yang terintegrasi dengan API Gemini (Generative AI) dari Google. Aplikasi ini menerima input dari pengguna, mengirimkannya ke model AI, lalu menampilkan respons dalam bentuk web sederhana.
 
 
-![Preview](Assets/implementasi.png)
+![Preview](Assets/Implementasi.png)
 
 ## 🚀 Teknologi yang Digunakan
 

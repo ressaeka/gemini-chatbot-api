@@ -50,7 +50,10 @@ form.addEventListener('submit', async (e) => {
 
     // Ambil respon dari server dan tampilkan ke chat
     const data = await res.json();
-    loadingMsg.textContent = (data.output || data.text || 'Saya Tidak Mengerti.').replace(/\*/g, '');
+    loadingMsg.textContent = (data.output || data.text || 'Saya Tidak Mengerti.')
+      .replace(/#+\s?/g, '')   // Hapus heading markdown: ###, ##, #
+      .replace(/\*\*/g, '')    // Hapus bold markdown: **bold**
+      .replace(/\*/g, '');     // Hapus italic: *italic*
 
   } catch (err) {
     // Jika gagal, tampilkan pesan error
