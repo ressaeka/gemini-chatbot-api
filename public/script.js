@@ -1,3 +1,6 @@
+// GANTI DENGAN URL RAILWAY PUNYA LO
+const API_URL = 'https://your-project.up.railway.app'; 
+
 // Ambil elemen-elemen DOM yang diperlukan
 const form = document.getElementById('chat-form');
 const input = document.getElementById('user-input');
@@ -35,13 +38,13 @@ form.addEventListener('submit', async (e) => {
       formData.append('file', file);
       if (prompt) formData.append('prompt', prompt);
 
-      res = await fetch('http://localhost:3000/generate', {
+      res = await fetch(`${API_URL}/generate`, {
         method: 'POST',
         body: formData
       });
     } else {
       // Jika hanya teks, kirim sebagai JSON
-      res = await fetch('http://localhost:3000/generate', {
+      res = await fetch(`${API_URL}/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt })
@@ -57,7 +60,7 @@ form.addEventListener('submit', async (e) => {
 
   } catch (err) {
     // Jika gagal, tampilkan pesan error
-    loadingMsg.textContent = 'Gagal menghubungi server.';
+    loadingMsg.textContent = '❌ Gagal menghubungi server.';
   }
 });
 
