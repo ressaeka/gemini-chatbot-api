@@ -1,5 +1,5 @@
-// URL Railway Backend 
-const API_URL = 'gemini-chatbot-api-production.up.railway.app'; 
+// URL Railway Backend
+const API_URL = 'https://gemini-chatbot-api-production.up.railway.app';
 
 // Ambil elemen-elemen DOM yang diperlukan
 const form = document.getElementById('chat-form');
