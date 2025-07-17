@@ -54,7 +54,7 @@ app.post('/generate', upload.single('file'), async (req, res) => {
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     'audio/mpeg', 'audio/mp3', 'audio/wav',
     'audio/webm', 'audio/ogg',
-    'video/mp4', 'video/webm', 'video/ogg' // ✅ TAMBAHAN VIDEO
+    'video/mp4', 'video/webm', 'video/ogg'
   ];
 
   if (!allowedMimeTypes.includes(mimeType)) {
