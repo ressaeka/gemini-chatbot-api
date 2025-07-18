@@ -67,7 +67,7 @@ app.post('/generate', upload.single('file'), async (req, res) => {
     const parts = prompt ? [{ text: prompt }, filePart] : [filePart];
 
     const result = await model.generateContent(parts);
-    const response = await result.response;
+    const response = result.response;
     res.json({ output: await response.text() });
   } catch (err) {
     res.status(500).json({ error: err.message });
