@@ -42,7 +42,8 @@ form.addEventListener('submit', async (e) => {
     }
 
     const data = await res.json();
-    loadingMsg.textContent = (data.output || data.text || 'Saya Tidak Mengerti.').replace(/\*/g, '');
+    loadingMsg.textContent = (data.output || data.text || 'Saya Tidak Mengerti.')
+    .replace(/[*#`~_>\-=]+/g, '')
 
   } catch (err) {
     loadingMsg.textContent = 'Gagal menghubungi server.';
