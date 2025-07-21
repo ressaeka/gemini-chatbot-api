@@ -29,12 +29,12 @@ form.addEventListener('submit', async (e) => {
       formData.append('file', file);
       if (prompt) formData.append('prompt', prompt);
 
-      res = await fetch('http://localhost:3000/generate', {
+      res = await fetch('http://localhost:3000/api/chat', {
         method: 'POST',
         body: formData
       });
     } else {
-      res = await fetch('http://localhost:3000/generate', {
+      res = await fetch('http://localhost:3000/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt })
